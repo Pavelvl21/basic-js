@@ -23,9 +23,34 @@ const { NotImplementedError } = require('../extensions/index.js');
  *  [1, 1, 1]
  * ]
  */
-function minesweeper(/* matrix */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+
+const setZeros = (matrix) => matrix
+  .map((row) => row.map((item) => item === false ? 0 : 'mine'));
+
+const setNearCount = (field) => {
+  for (let i = 0; i < field.length; i += 1) {
+    for (let j = 0; j < field[i].length; j += 1) {
+      if (field[i][j] === 'mine') {
+        if (j > 0) {
+          field[i][j - 1] === 'mine' ? 'mine ' : field[i][j - 1] += 1;
+          field[j - 1][i] === 'mine' ? 'mine ' : field[j - 1][i] += 1;
+          field[j - 1][i + 1] === 'mine' ? 'mine ' : field[j - 1][i + 1] += 1;
+        }
+        if (i > 0) {
+          field[j + 1][i - 1] === 'mine' ? 'mine ' : field[j + 1][i - 1] += 1;
+        }
+        field[i][i + 1] === 'mine' ? 'mine ' : field[i][i + 1] += 1;
+        field[j + 1][i] === 'mine' ? 'mine ' : field[j + 1][i] += 1;
+        field[j + 1][i + 1] === 'mine' ? 'mine ' : field[j + 1][i + 1] += 1;
+      }
+    }
+  }
+  return field;
+}
+function minesweeper(matrix) {
+  const zerosField = setZeros(matrix);
+  return setNearCount(zerosField)
+    .map((arr) => arr.map((item) => item === 'mine' ? 1 : item));
 }
 
 module.exports = {
